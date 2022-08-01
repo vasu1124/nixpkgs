@@ -59,7 +59,7 @@ in {
       gpg.program = "gpg2";
 
       protocol.keybase.allow = "always";
-      credential.helper = "osxkeychain";
+      credential.helper = if pkgs.stdenv.isDarwin then "osxkeychain" else "";
       pull.rebase = "false";
     };
   };

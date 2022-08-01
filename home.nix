@@ -116,6 +116,7 @@ in {
     jq # JSON parsing for the CLI
     jsonnet # Easy config language
     kind # Easy Kubernetes installation
+    k9s
     # kompose
     # kubectl # Kubernetes CLI tool
     # kubectx # kubectl context switching
@@ -127,7 +128,6 @@ in {
     nix-serve
     nixos-generators
     nodejs # node and npm
-    pinentry_mac # Necessary for GPG
     podman # Docker alternative
     #prometheus # Monitoring system
     protobuf # Protocol Buffers
@@ -145,6 +145,10 @@ in {
     # fonts
     nerdfonts
 
-  ] ++ gitTools ++ scripts;
+  ] ++ gitTools ++ scripts ++ lib.optionals stdenv.isDarwin [
+    pinentry_mac # Necessary for GPG
+  ];
+     
+
 
 }
