@@ -10,6 +10,10 @@ in {
     enable = true;
     userName = "vasu1124";
     userEmail = "vasu1124@actvirtual.com";
+    signing = { 
+      signByDefault = true;
+      key = "47C0A040A4920EAC";
+    };
 
     # Replaces ~/.gitignore
     ignores = [
@@ -55,8 +59,8 @@ in {
         whitespace = "trailing-space,space-before-tab";
       };
 
-      # commit.gpgsign = "true";
-      gpg.program = "gpg2";
+      commit.gpgsign = "true";
+      # gpg.program = "gpg2";
 
       protocol.keybase.allow = "always";
       credential.helper = if pkgs.stdenv.isDarwin then "osxkeychain" else "";

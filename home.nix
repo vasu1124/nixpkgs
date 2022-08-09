@@ -52,6 +52,7 @@ let
     diff-so-fancy
     git-codeowners
     gitflow
+    git-lfs
     gh
   ];
 
@@ -68,8 +69,8 @@ in {
   programs.home-manager.enable = true;
 
   home = {
-    username = "vca";
-    homeDirectory = "/Users/vca";
+    username = "d023462";
+    homeDirectory = "/Users/d023462";
     stateVersion = "22.05";
   };
 
@@ -80,6 +81,13 @@ in {
     EDITOR = "nvim";
     TERMINAL = "alacritty";
   };
+
+  home.sessionPath = [
+    "/usr/local/bin"
+    "$HOME/go/bin"
+    "$HOME/.krew/bin"
+    "$HOME/bin"
+  ];
 
   # Miscellaneous packages (in alphabetical order)
   home.packages = with pkgs; [
@@ -92,6 +100,7 @@ in {
     buildpack # Cloud Native buildpacks
     # buildkit # Fancy Docker
     cachix # Nix build cache
+    civo
     # cargo-edit # Easy Rust dependency management
     # cargo-graph # Rust dependency graphs
     # cargo-watch # Watch a Rust project and execute custom commands upon change
@@ -99,8 +108,10 @@ in {
     curl # An old classic
     colorls
     coreutils
+    cpulimit
     # dhall # Exotic, Nix-like configuration language
     direnv # Per-directory environment variables
+    exercism
     # docker # World's #1 container tool
     # docker-compose # Local multi-container Docker environments
     # docker-machine # Docker daemon for macOS
@@ -115,11 +126,12 @@ in {
     httpie # Like curl but more user friendly
     jq # JSON parsing for the CLI
     jsonnet # Easy config language
-    kind # Easy Kubernetes installation
     k9s
+    kind # Easy Kubernetes installation
     # kompose
     # kubectl # Kubernetes CLI tool
-    # kubectx # kubectl context switching
+    kubectx # kubectl context switching
+    kubelogin
     kubernetes-helm # Kubernetes package manager
     kustomize
     # lorri # Easy Nix shell
@@ -128,11 +140,13 @@ in {
     nix-serve
     nixos-generators
     nodejs # node and npm
+    openssl
     podman # Docker alternative
     #prometheus # Monitoring system
     protobuf # Protocol Buffers
     # python3 # Have you upgraded yet???
     skaffold # Local Kubernetes dev tool
+    sops
     # starship # Fancy shell that works with zsh
     terraform # Declarative infrastructure management
     tilt # Fast-paced Kubernetes development
@@ -148,7 +162,19 @@ in {
   ] ++ gitTools ++ scripts ++ lib.optionals stdenv.isDarwin [
     pinentry_mac # Necessary for GPG
   ];
-     
+  
+  home.file.".gnupg/gpg-agent.conf".text = ''
+    use-standard-socket
+    pinentry-program /Users/d023462/.nix-profile/Applications/pinentry-mac.app/Contents/MacOS/pinentry-mac
+  '';
 
+  home.file.".gnupg/gpg.conf".text = ''
+    use-agent
+
+    # This silences the "you need a passphrase" message once the passphrase handling is all set.
+    # Use at your own discretion - may prevent the successful interactive use of some operations.
+    # It is working fine for my use cases though.
+    # batch
+  '';
 
 }
