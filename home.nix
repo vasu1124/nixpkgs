@@ -65,17 +65,11 @@ in {
     allowUnsupportedSystem = true;
   };
 
-  # Enable Home Manager
-  programs.home-manager.enable = true;
-
   home = {
     username = "d023462";
     homeDirectory = "/Users/d023462";
     stateVersion = "22.05";
   };
-
-  # Golang
-  programs.go.enable = true;
 
   home.sessionVariables = {
     EDITOR = "nvim";
@@ -107,6 +101,7 @@ in {
     cue # Experimental configuration language
     curl # An old classic
     colorls
+    comma
     coreutils
     cpulimit
     # dhall # Exotic, Nix-like configuration language
@@ -117,8 +112,10 @@ in {
     # docker-machine # Docker daemon for macOS
     fluxctl # GitOps operator
     fzf
+    fzy
     google-cloud-sdk # Google Cloud Platform CLI
     graphviz # dot
+    findutils
     gnupg # gpg
     gnused
     gnutar
@@ -139,7 +136,7 @@ in {
     niv # Nix dependency management
     nix-serve
     nixos-generators
-    nodejs # node and npm
+    # nodejs # node and npm
     openssl
     podman # Docker alternative
     #prometheus # Monitoring system
@@ -155,6 +152,7 @@ in {
     vault # Secret management
     vscode # My fav text editor if I'm being honest
     wget
+    zsh-powerlevel10k
 
     # fonts
     nerdfonts
@@ -176,5 +174,14 @@ in {
     # It is working fine for my use cases though.
     # batch
   '';
+
+  # Home Manager
+  programs.home-manager.enable = true;
+  # nix-index for comma
+  programs.nix-index.enable = true;
+  # Dircolors
+  programs.dircolors.enable = true;
+  # Golang
+  programs.go.enable = true;
 
 }

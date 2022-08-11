@@ -61,8 +61,8 @@ in {
       export TERM="xterm-256color"
       bindkey -e
 
-      autoload -Uz promptinit
-      promptinit
+      # autoload -Uz promptinit
+      # promptinit
       # zsh-mime-setup
       autoload colors
       colors
@@ -98,7 +98,7 @@ in {
       source <(gh completion --shell zsh)
       # rustup completions zsh > ~/.zfunc/_rustup
       source <(cue completion zsh)
-      source <(npm completion zsh)
+      # source <(npm completion zsh)
       source <(fluxctl completion zsh)
 
       # direnv setup
@@ -122,11 +122,14 @@ in {
         iterm2_set_user_var kubecontext $(kubectl config current-context)
       }
 
+      autoload -U compinit && compinit
     '';
 
-#    initExtraBeforeCompInit = ''
-#      PROMPT='\$(shell-prompt \"\$?\" \"\$\{__shadowenv_data\%\%:*\}\" \"\$\{__dev_source_dir\}\")'
-#    '';
+    initExtraBeforeCompInit = ''
+      if [[ -f "$HOME/.p10k.zsh" ]]; then
+        source "$HOME/.p10k.zsh"
+      fi
+    '';
 
     zplug = {
       enable = true;
@@ -146,8 +149,17 @@ in {
         "git"
         "sudo"
       ];
-      theme = "agnoster";
+      # theme = "agnoster";
+      # theme = "powerlevel10k";
     };
+
+    plugins = with pkgs; [
+      {
+        file = "powerlevel10k.zsh-theme";
+        name = "powerlevel10k";
+        src = "${zsh-powerlevel10k}/share/zsh-powerlevel10k";
+      }
+    ];
 
     # sessionVariables = rec {
     #   NVIM_TUI_ENABLE_TRUE_COLOR = "1";
@@ -155,4 +167,6 @@ in {
     #   DEV_ALLOW_ITERM2_INTEGRATION = "1";
     # };
   };
+
+  home.file.".p10k.zsh".source = ./p10k.zsh;
 }
