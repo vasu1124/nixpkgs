@@ -65,6 +65,7 @@ in {
       protocol.keybase.allow = "always";
       credential.helper = if pkgs.stdenv.isDarwin then "osxkeychain" else "";
       pull.rebase = "false";
+      init.defaultBranch = "main";
     };
   };
 }
