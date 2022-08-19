@@ -13,13 +13,13 @@ let
     ll = "ls -lh";
     k = "kubectl";
     vi = "vim";
-    hms = "home-manager switch";
+    hms = "home-manager --extra-experimental-features 'nix-command flakes' switch";
 
     # Reload zsh
     szsh = "source ~/.zshrc";
 
     # Reload home manager and zsh
-    reload = "home-manager switch && source ~/.zshrc";
+    reload = "home-manager --extra-experimental-features 'nix-command flakes' switch && source ~/.zshrc";
 
     # Nix garbage collection
     garbage = "nix-collect-garbage -d && docker image prune --force";
@@ -57,8 +57,16 @@ in {
 
     # Called whenever zsh is initialized
     initExtra = ''
+      export SHELL=${pkgs.zsh}/bin/zsh
       export LC_ALL=en_US.UTF-8
       export TERM="xterm-256color"
+      export PATH=/usr/local/bin:$PATH
+
+      # Nix setup (environment variables, etc.)
+      if [ -e ~/.nix-profile/etc/profile.d/nix.sh ]; then
+        . ~/.nix-profile/etc/profile.d/nix.sh
+      fi
+
       bindkey -e
 
       # autoload -Uz promptinit
@@ -75,11 +83,9 @@ in {
       zstyle ':completion:*:kill:*' command 'ps -u $USER -o pid,%cpu,comm'
       zstyle ':completion:*:*:kill:*:processes' list-colors '=(#b) #([0-9]#)*=0=01;31'
 
-      test -e "~/.iterm2_shell_integration.zsh" && source "~/.iterm2_shell_integration.zsh"
-
-      # Nix setup (environment variables, etc.)
-      if [ -e ~/.nix-profile/etc/profile.d/nix.sh ]; then
-        . ~/.nix-profile/etc/profile.d/nix.sh
+      # iterm2 shell integration
+      if [ -e ~/.iterm2_shell_integration.zsh ]; then
+        . ~/.iterm2_shell_integration.zsh
       fi
 
       # Load environment variables from a file; this approach allows me to not
@@ -92,17 +98,13 @@ in {
       # eval "$(starship init zsh)"
 
       # Autocomplete for various utilities
-      source <(helm completion zsh)
-      source <(kubectl completion zsh)
-      source <(minikube completion zsh)
-      source <(gh completion --shell zsh)
+      # source <(helm completion zsh)
+      # source <(kubectl completion zsh)
+      # source <(minikube completion zsh)
+      # source <(gh completion --shell zsh)
       # rustup completions zsh > ~/.zfunc/_rustup
-      source <(cue completion zsh)
+      # source <(cue completion zsh)
       # source <(npm completion zsh)
-      source <(fluxctl completion zsh)
-
-      # direnv setup
-      eval "$(direnv hook zsh)"
 
       # Start up Docker daemon if not running
       # if [ $(docker-machine status default) != "Running" ]; then
@@ -119,9 +121,12 @@ in {
       eval "$(direnv hook zsh)"
 
       function iterm2_print_user_vars() {
-        iterm2_set_user_var kubecontext $(kubectl config current-context)
+        iterm2_set_user_var kubecontext $(kubectx)
       }
 
+      # https://github.com/danielfoehrKn/kubeswitch/blob/master/docs/installation.md
+      INSTALLATION_PATH=$(brew --prefix switch) && source $INSTALLATION_PATH/switch.sh
+      
       autoload -U compinit && compinit
     '';
 
@@ -147,10 +152,10 @@ in {
         "docker-compose"
         "dotenv"
         "git"
+        "helm"
         "sudo"
       ];
       # theme = "agnoster";
-      # theme = "powerlevel10k";
     };
 
     plugins = with pkgs; [
@@ -162,9 +167,7 @@ in {
     ];
 
     # sessionVariables = rec {
-    #   NVIM_TUI_ENABLE_TRUE_COLOR = "1";
-    #   ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE = "fg=3";
-    #   DEV_ALLOW_ITERM2_INTEGRATION = "1";
+    #   NIX_SSL_CERT_FILE = ~/.ssl/my-ca-bundle;
     # };
   };
 

@@ -39,13 +39,20 @@ let
     wo
   ];
 
-#  pythonPackages = with pkgs.python38Packages; [
-#    bpython
-#    openapi-spec-validator
-#    pip
-#    requests
-#    setuptools
-#  ];
+  # rubyPackages = with pkgs.rubyPackages_3_1; [
+  #   jsonpath
+  #   vault
+  #   jwt
+  #   huhalala
+  # ];
+
+  # pythonPackages = with pkgs.python38Packages; [
+  #   bpython
+  #   openapi-spec-validator
+  #   pip
+  #   requests
+  #   setuptools
+  # ];
 
   gitTools = with pkgs.gitAndTools; [
     delta
@@ -72,15 +79,16 @@ in {
   };
 
   home.sessionVariables = {
+    NIX_SSL_CERT_FILE = ~/.ssl/my-ca-bundle;
     EDITOR = "nvim";
     TERMINAL = "alacritty";
   };
 
   home.sessionPath = [
-    "/usr/local/bin"
     "$HOME/go/bin"
     "$HOME/.krew/bin"
     "$HOME/bin"
+  #  "$HOME/.local/share/gem/ruby/3.1.0/bin"
   ];
 
   # Miscellaneous packages (in alphabetical order)
@@ -93,6 +101,7 @@ in {
     bat # cat replacement written in Rust
     buildpack # Cloud Native buildpacks
     # buildkit # Fancy Docker
+    cacert
     cachix # Nix build cache
     civo
     # cargo-edit # Easy Rust dependency management
@@ -110,7 +119,8 @@ in {
     # docker # World's #1 container tool
     # docker-compose # Local multi-container Docker environments
     # docker-machine # Docker daemon for macOS
-    fluxctl # GitOps operator
+    fluxcd 
+    # fluxctl # GitOps operator
     fzf
     fzy
     google-cloud-sdk # Google Cloud Platform CLI
@@ -128,7 +138,7 @@ in {
     # kompose
     # kubectl # Kubernetes CLI tool
     kubectx # kubectl context switching
-    kubelogin
+    kubelogin-oidc
     kubernetes-helm # Kubernetes package manager
     kustomize
     # lorri # Easy Nix shell
@@ -136,12 +146,14 @@ in {
     niv # Nix dependency management
     nix-serve
     nixos-generators
-    # nodejs # node and npm
+    nodejs # node and npm
+    nodePackages.semver
     openssl
     podman # Docker alternative
     #prometheus # Monitoring system
     protobuf # Protocol Buffers
     # python3 # Have you upgraded yet???
+    # ruby_3_1
     skaffold # Local Kubernetes dev tool
     sops
     # starship # Fancy shell that works with zsh
@@ -155,11 +167,12 @@ in {
     zsh-powerlevel10k
 
     # fonts
-    nerdfonts
+    #nerdfonts
 
   ] ++ gitTools ++ scripts ++ lib.optionals stdenv.isDarwin [
     pinentry_mac # Necessary for GPG
   ];
+  
   
   home.file.".gnupg/gpg-agent.conf".text = ''
     use-standard-socket
@@ -175,6 +188,14 @@ in {
     # batch
   '';
 
+  #home.file.".ssl/internal.crt".source = ./internal.crt;
+
+  home.activation = {
+    cacerts = lib.hm.dag.entryAfter ["writeBoundary"] ''
+      $DRY_RUN_CMD cat ~/.nix-profile/etc/ssl/certs/ca-bundle.crt ~/.ssl/*.crt >~/.ssl/my-ca-bundle
+    '';
+  };
+
   # Home Manager
   programs.home-manager.enable = true;
   # nix-index for comma
@@ -184,4 +205,5 @@ in {
   # Golang
   programs.go.enable = true;
 
+  # security.pki.certificateFiles = [ "/usr/local/share/ca-certificates/internal.crt" ];
 }
