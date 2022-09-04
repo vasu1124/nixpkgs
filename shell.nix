@@ -57,6 +57,9 @@ in {
 
     # Called whenever zsh is initialized
     initExtra = ''
+      autoload -U compinit && compinit
+      autoload bashcompinit && bashcompinit
+
       export SHELL=${pkgs.zsh}/bin/zsh
       export LC_ALL=en_US.UTF-8
       export TERM="xterm-256color"
@@ -125,9 +128,8 @@ in {
       }
 
       # https://github.com/danielfoehrKn/kubeswitch/blob/master/docs/installation.md
-      INSTALLATION_PATH=$(brew --prefix switch) && source $INSTALLATION_PATH/switch.sh
-      
-      autoload -U compinit && compinit
+      # INSTALLATION_PATH=$(brew --prefix switch) && source $INSTALLATION_PATH/switch.sh
+      source ~/.nix-profile/share/bash-completion/completions/switch.sh
     '';
 
     initExtraBeforeCompInit = ''

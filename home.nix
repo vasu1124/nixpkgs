@@ -2,7 +2,8 @@
 
 let
   nigpkgsRev = "nixpkgs-unstable";
-  pkgs = import (fetchTarball "https://github.com/nixos/nixpkgs/archive/${nigpkgsRev}.tar.gz") {};
+  pkgs = import (fetchTarball "https://github.com/nixos/nixpkgs/archive/${nigpkgsRev}.tar.gz") {} // 
+         import ./gardener.nix;
 
   # Import other Nix files
   imports = [
@@ -18,7 +19,6 @@ let
     dep=$1
     nix-store --query --requisites $(which $dep)
   '';
-
 
   git-hash = pkgs.writeScriptBin "git-hash" ''
     nix-prefetch-url --unpack https://github.com/$1/$2/archive/$3.tar.gz
@@ -88,7 +88,6 @@ in {
     "$HOME/go/bin"
     "$HOME/.krew/bin"
     "$HOME/bin"
-  #  "$HOME/.local/share/gem/ruby/3.1.0/bin"
   ];
 
   # Miscellaneous packages (in alphabetical order)
@@ -114,7 +113,9 @@ in {
     coreutils
     cpulimit
     # dhall # Exotic, Nix-like configuration language
+    delve
     direnv # Per-directory environment variables
+    dive
     exercism
     # docker # World's #1 container tool
     # docker-compose # Local multi-container Docker environments
@@ -123,6 +124,9 @@ in {
     # fluxctl # GitOps operator
     fzf
     fzy
+    gardenctl
+    gardenlogin
+    kubeswitch
     google-cloud-sdk # Google Cloud Platform CLI
     graphviz # dot
     findutils
@@ -136,7 +140,8 @@ in {
     k9s
     kind # Easy Kubernetes installation
     # kompose
-    # kubectl # Kubernetes CLI tool
+    # kubectl # Kubernetes CLI tool, use docker
+    krew
     kubectx # kubectl context switching
     kubelogin-oidc
     kubernetes-helm # Kubernetes package manager
@@ -176,7 +181,7 @@ in {
   
   home.file.".gnupg/gpg-agent.conf".text = ''
     use-standard-socket
-    pinentry-program /Users/d023462/.nix-profile/Applications/pinentry-mac.app/Contents/MacOS/pinentry-mac
+    pinentry-program ~/.nix-profile/Applications/pinentry-mac.app/Contents/MacOS/pinentry-mac
   '';
 
   home.file.".gnupg/gpg.conf".text = ''
