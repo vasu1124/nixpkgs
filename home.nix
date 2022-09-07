@@ -183,10 +183,9 @@ in {
   home.file.".gnupg/gpg-agent.conf".text = ''
     disable-scdaemon
     grab
-    # pinentry-program ${builtins.getEnv "HOME"}/.nix-profile/Applications/pinentry-mac.app/Contents/MacOS/pinentry-mac
   '' + 
-  lib.optionals pkgs.stdenv.isDarwin "${builtins.getEnv "HOME"}/.nix-profile/Applications/pinentry-mac.app/Contents/MacOS/pinentry-mac";
-  # "${pkgs.pinentry_mac}/Applications/pinentry-mac.app/Contents/MacOS/pinentry-mac";
+  lib.optionals pkgs.stdenv.isDarwin "pinentry-program ${builtins.getEnv "HOME"}/.nix-profile/Applications/pinentry-mac.app/Contents/MacOS/pinentry-mac";
+  # "pinentry-program ${pkgs.pinentry_mac}/Applications/pinentry-mac.app/Contents/MacOS/pinentry-mac";
 
   #home.file.".ssl/internal.crt".source = ./internal.crt;
 
