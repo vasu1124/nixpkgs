@@ -2,8 +2,8 @@
 
 let
   nigpkgsRev = "nixpkgs-unstable";
-  pkgs = import (fetchTarball "https://github.com/nixos/nixpkgs/archive/${nigpkgsRev}.tar.gz") {} // 
-         import ./gardener.nix;
+  pkgs = import (fetchTarball "https://github.com/nixos/nixpkgs/archive/${nigpkgsRev}.tar.gz") {} //
+         import ./gardener.nix { nixpkgs=pkgs; };
 
   # Import other Nix files
   imports = [
@@ -73,8 +73,8 @@ in {
   };
 
   home = {
-    username = "d023462";
-    homeDirectory = "/Users/d023462";
+    username = builtins.getEnv "USER";
+    homeDirectory = builtins.getEnv "HOME";
     stateVersion = "22.05";
   };
 
@@ -165,6 +165,7 @@ in {
     terraform # Declarative infrastructure management
     tilt # Fast-paced Kubernetes development
     tree # Should be included in macOS but it's not
+    python310Packages.wakeonlan
     vagrant # Virtualization made easy
     vault # Secret management
     vscode # My fav text editor if I'm being honest
@@ -180,18 +181,12 @@ in {
   
   
   home.file.".gnupg/gpg-agent.conf".text = ''
-    use-standard-socket
-    pinentry-program ~/.nix-profile/Applications/pinentry-mac.app/Contents/MacOS/pinentry-mac
-  '';
-
-  home.file.".gnupg/gpg.conf".text = ''
-    use-agent
-
-    # This silences the "you need a passphrase" message once the passphrase handling is all set.
-    # Use at your own discretion - may prevent the successful interactive use of some operations.
-    # It is working fine for my use cases though.
-    # batch
-  '';
+    disable-scdaemon
+    grab
+    # pinentry-program ${builtins.getEnv "HOME"}/.nix-profile/Applications/pinentry-mac.app/Contents/MacOS/pinentry-mac
+  '' + 
+  lib.optionals pkgs.stdenv.isDarwin "${builtins.getEnv "HOME"}/.nix-profile/Applications/pinentry-mac.app/Contents/MacOS/pinentry-mac";
+  # "${pkgs.pinentry_mac}/Applications/pinentry-mac.app/Contents/MacOS/pinentry-mac";
 
   #home.file.".ssl/internal.crt".source = ./internal.crt;
 
@@ -209,6 +204,8 @@ in {
   programs.dircolors.enable = true;
   # Golang
   programs.go.enable = true;
-
+  # GPG
+  programs.gpg.enable = true;
+  
   # security.pki.certificateFiles = [ "/usr/local/share/ca-certificates/internal.crt" ];
 }

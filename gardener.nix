@@ -1,23 +1,16 @@
+{ nixpkgs }:
 let
-  # nixpkgs = import <nixpkgs> {};
-  nigpkgsRev = "nixpkgs-unstable";
-  nixpkgs = import (fetchTarball "https://github.com/nixos/nixpkgs/archive/${nigpkgsRev}.tar.gz") {};
-
   allPkgs = nixpkgs // pkgs;
-  callPackage = path: overrides:
+  callP = path: overrides:
     let f = import path;
     in f ((builtins.intersectAttrs (builtins.functionArgs f) allPkgs) // overrides);
-  pkgs = with nixpkgs; {
+  makeOverridable = f: origArgs:
+    let origRes = f origArgs;
+    in origRes // { override = newArgs: makeOverridable f (origArgs // newArgs); };
+  callPackage = path: makeOverridable (callP path);
+  pkgs = with nixpkgs; rec {
     gardenctl = callPackage ./gardenctl.nix { };
     gardenlogin = callPackage ./gardenlogin.nix { };
     kubeswitch = callPackage ./kubeswitch.nix { };
   };
 in pkgs
-
-
-# let
-#   pkgs = import <nixpkgs> {};
-# in with pkgs; {
-#   gardenctl = import ./gardenctl.nix { inherit stdenv lib fetchurl; };
-#   gardenlogin = import ./gardenlogin.nix { inherit stdenv lib fetchurl; };
-# }
