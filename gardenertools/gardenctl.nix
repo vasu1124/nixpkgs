@@ -10,17 +10,21 @@ let
            optionalString isDarwin "darwin" +
            "_" + 
            optionalString isx86_64 "amd64" +
+           optionalString isAarch64 "arm64" +
            optionalString isWindows ".exe";
 in stdenv.mkDerivation {
     name = "${binary}-${version}";
     version = "${version}";
     dontUnpack = true;
     
-    src = builtins.fetchurl {
+    src = with lib; with stdenv.targetPlatform; builtins.fetchurl {
       url = "https://github.com/gardener/${name}/releases/download/v${version}/${release}";
       # curlOpts = "-v -O";
-      sha256 = "sha256-gKfz/tDO+VDZyuAq+4wWaIVM6N8ssVD5RVWNR5U8Nn8=";
-      #showURLs = false;
+      sha256 = optionalString isDarwin  (optionalString isx86_64  "sha256:0zrn7jalg3am8pwm1c9cvzl4r1b82s6gnap0rbcm1yffs3zg79w0") +
+               optionalString isLinux   (optionalString isx86_64  "sha256:1i9rd795n81kj7hrfqs22p4k2wziyabzj87nch7iy0gsws3fwxcj") +
+               optionalString isWindows (optionalString isx86_64  "sha256:1nv91i8457mazl35cd1z3nf45zd1s81s1gixka2c1zi76pjg9j41") +
+               optionalString isDarwin  (optionalString isAarch64 "sha256:1gdzsir6bgl3kdqx3lj4734k9ifzggph007krqxc4qihg06gi1z3");
+
     };
 
     installPhase = ''
