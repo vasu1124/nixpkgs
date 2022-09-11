@@ -1,4 +1,4 @@
-{ stdenv, lib, fetchurl, installShellFiles }:
+{ pkgs ? import <nixpkgs> {}, stdenv ? pkgs.stdenv, lib ? pkgs.lib, installShellFiles ? pkgs.installShellFiles }:
 let
   name = "kubeswitch";
   version = "0.7.1";
@@ -16,13 +16,13 @@ in stdenv.mkDerivation {
     version = "${version}";
     dontUnpack = true;
     
-    src = fetchurl {
+    src = builtins.fetchurl {
       url = "https://github.com/danielfoehrKn/${name}/releases/download/${version}/${release}";
       # curlOpts = "-v -O";
       sha256 = "sha256-m3q+Yrr5uZJbOYhoSKFi1BlH5vM6OKcfg4N5oPJahjA=";
       #showURLs = false;
     };
-    src2 = fetchurl {
+    src2 = builtins.fetchurl {
       url = "https://github.com/danielfoehrKn/${name}/releases/download/${version}/switch.sh";
       sha256 = "sha256-vghp8RuI9pSiQDDrwPSU7JkecEYCi0jhGn1x/2YjX/4=";
     };

@@ -1,4 +1,4 @@
-{ stdenv, lib, fetchurl, installShellFiles }:
+{ pkgs ? import <nixpkgs> {}, stdenv ? pkgs.stdenv, lib ? pkgs.lib, installShellFiles ? pkgs.installShellFiles }:
 let
   name = "gardenlogin";
   version = "0.3.0";
@@ -16,7 +16,7 @@ in stdenv.mkDerivation {
     version = "${version}";
     dontUnpack = true;
     
-    src = fetchurl {
+    src = builtins.fetchurl {
       url = "https://github.com/gardener/${name}/releases/download/v${version}/${release}";
       # curlOpts = "-v -O";
       sha256 = "sha256-FcU5jGbJH45+e9Wd5dnbNnjAODXojNDY8ON+1FKXuWw=";
@@ -35,8 +35,8 @@ in stdenv.mkDerivation {
 
     nativeBuildInputs = [ installShellFiles ];
     postInstall = ''
-      $out/bin/${binary} completion bash > ${binary}.bash
-      $out/bin/${binary} completion zsh > ${binary}.zsh
+      $out/bin/${binary} completion bash > ${binary}.bash 2>/dev/null
+      $out/bin/${binary} completion zsh > ${binary}.zsh 2>/dev/null
       installShellCompletion ${binary}.{bash,zsh}
     '';
 

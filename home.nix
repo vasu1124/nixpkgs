@@ -1,9 +1,8 @@
 { config, lib, ... }:
 
 let
-  nigpkgsRev = "nixpkgs-unstable";
-  pkgs = import (fetchTarball "https://github.com/nixos/nixpkgs/archive/${nigpkgsRev}.tar.gz") {} //
-         import ./gardener.nix { nixpkgs=pkgs; };
+  pkgs = import <nixpkgs> {} //
+         import ./gardenertools {};
 
   # Import other Nix files
   imports = [
@@ -67,10 +66,10 @@ in {
   inherit imports;
 
   # Allow non-free (as in beer) packages
-  nixpkgs.config = {
-    allowUnfree = true;
-    allowUnsupportedSystem = true;
-  };
+  # nixpkgs.config = {
+  #  allowUnfree = true;
+  #  allowUnsupportedSystem = true;
+  # };
 
   home = {
     username = builtins.getEnv "USER";
@@ -151,10 +150,10 @@ in {
     niv # Nix dependency management
     nix-serve
     nixos-generators
-    nodejs # node and npm
-    nodePackages.semver
+    # nodejs # node and npm
+    # nodePackages.semver
     openssl
-    podman # Docker alternative
+    # podman # Docker alternative
     #prometheus # Monitoring system
     protobuf # Protocol Buffers
     # python3 # Have you upgraded yet???
@@ -172,10 +171,12 @@ in {
     wget
     zsh-powerlevel10k
 
-    # fonts
-    #nerdfonts
+    # nerdfonts # not needed anymore with zsh-powerlevel10k
 
-  ] ++ gitTools ++ scripts ++ lib.optionals stdenv.isDarwin [
+  ] 
+  ++ gitTools 
+  ++ scripts 
+  ++ lib.optionals stdenv.isDarwin [
     pinentry_mac # Necessary for GPG
   ];
   
@@ -183,9 +184,8 @@ in {
   home.file.".gnupg/gpg-agent.conf".text = ''
     disable-scdaemon
     grab
-  '' + 
+  '' +
   lib.optionals pkgs.stdenv.isDarwin "pinentry-program ${builtins.getEnv "HOME"}/.nix-profile/Applications/pinentry-mac.app/Contents/MacOS/pinentry-mac";
-  # "pinentry-program ${pkgs.pinentry_mac}/Applications/pinentry-mac.app/Contents/MacOS/pinentry-mac";
 
   #home.file.".ssl/internal.crt".source = ./internal.crt;
 
