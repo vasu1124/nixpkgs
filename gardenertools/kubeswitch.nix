@@ -5,22 +5,22 @@ let
   binary = "switcher";
   release = with lib; with stdenv.targetPlatform;
            "switcher_" +
-           optionalString isWindows "windows" +
-           optionalString isLinux "linux" +
            optionalString isDarwin "darwin" +
+           optionalString isLinux "linux" +
            "_" + 
-           optionalString isx86_64 "amd64" +
-           optionalString isWindows ".exe";
+           optionalString isAarch64 "arm64" +
+           optionalString isx86_64 "amd64";      
 in stdenv.mkDerivation {
     name = "${name}-${version}";
     version = "${version}";
     dontUnpack = true;
     
-    src = builtins.fetchurl {
+    src = with lib; with stdenv.targetPlatform; builtins.fetchurl {
       url = "https://github.com/danielfoehrKn/${name}/releases/download/${version}/${release}";
       # curlOpts = "-v -O";
-      sha256 = "sha256-m3q+Yrr5uZJbOYhoSKFi1BlH5vM6OKcfg4N5oPJahjA=";
-      #showURLs = false;
+      sha256 = optionalString isDarwin (optionalString isx86_64  "sha256:0c46bbra0yc3hcgsff1sygk4f6flcahlhs4875dr5fgrp9ibwylv") +
+               optionalString isLinux  (optionalString isx86_64  "sha256:0i6cif6sym00a383ybbxd26jpg9qfhvf4n3n4pq29zv5211600hf") +
+               optionalString isDarwin (optionalString isAarch64 "sha256:0c29hi2vv59jwgblzgrshbkqnwfm6hpd74i428k8g85h2sni7j3f");
     };
     src2 = builtins.fetchurl {
       url = "https://github.com/danielfoehrKn/${name}/releases/download/${version}/switch.sh";
@@ -51,7 +51,7 @@ in stdenv.mkDerivation {
       '';
       homepage = "https://github.com/danielfoehrKn/kubeswitch";
       license = licenses.asl20;
-      platforms = with platforms; linux ++ darwin ++ windows;
+      platforms = with platforms; linux ++ darwin;
       maintainers = with maintainers; [ vasu1124 ];
     };
   }
