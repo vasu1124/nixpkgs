@@ -53,17 +53,13 @@ in {
     inherit shellAliases;
     enableAutosuggestions = true;
     enableCompletion = true;
+    enableSyntaxHighlighting = true;
     history.extended = true;
+    autocd = true;
 
     # Called whenever zsh is initialized
     initExtra = ''
-      autoload -U compinit && compinit
       autoload bashcompinit && bashcompinit
-
-      export SHELL=${pkgs.zsh}/bin/zsh
-      export LC_ALL=en_US.UTF-8
-      export TERM="xterm-256color"
-      export PATH=/usr/local/bin:$PATH
 
       # Nix setup (environment variables, etc.)
       if [ -e ~/.nix-profile/etc/profile.d/nix.sh ]; then
@@ -72,14 +68,10 @@ in {
 
       bindkey -e
 
-      # autoload -Uz promptinit
-      # promptinit
-      # zsh-mime-setup
-      autoload colors
-      colors
+      autoload colors && colors
       autoload -Uz zmv # move function
       autoload -Uz zed # edit functions within zle
-      zle_highlight=(isearch:underline)
+      # zle_highlight=(isearch:underline)
 
       # Enable ..<TAB> -> ../
       zstyle ':completion:*' special-dirs true
@@ -101,13 +93,7 @@ in {
       # eval "$(starship init zsh)"
 
       # Autocomplete for various utilities
-      # source <(helm completion zsh)
-      # source <(kubectl completion zsh)
-      # source <(minikube completion zsh)
-      # source <(gh completion --shell zsh)
       # rustup completions zsh > ~/.zfunc/_rustup
-      # source <(cue completion zsh)
-      # source <(npm completion zsh)
 
       # Start up Docker daemon if not running
       # if [ $(docker-machine status default) != "Running" ]; then
@@ -138,27 +124,19 @@ in {
       fi
     '';
 
-    zplug = {
-      enable = true;
-      plugins = [
-        { name = "zsh-users/zsh-autosuggestions"; } 
-        { name = "zsh-users/zsh-syntax-highlighting"; }
-      ];
-    };
-
-    oh-my-zsh = {
-      enable = true;
-      plugins = [
-        "kubectl"
-        "docker"
-        "docker-compose"
-        "dotenv"
-        "git"
-        "helm"
-        "sudo"
-      ];
-      # theme = "agnoster";
-    };
+#    oh-my-zsh = {
+#      enable = true;
+#      plugins = [
+#        "kubectl"
+#        "docker"
+#        "docker-compose"
+#        "dotenv"
+#        "git"
+#        "helm"
+#        "sudo"
+#      ];
+#      # theme = "agnoster";
+#    };
 
     plugins = with pkgs; [
       {
@@ -168,9 +146,12 @@ in {
       }
     ];
 
-    # sessionVariables = rec {
-    #   NIX_SSL_CERT_FILE = ~/.ssl/my-ca-bundle;
-    # };
+    sessionVariables = rec {
+      SHELL = "$HOME/.nix-profile/bin/zsh";
+      LC_ALL = "en_US.UTF-8";
+      TERM = "xterm-256color";
+      PATH = "/usr/local/bin:$PATH";
+    };
   };
 
   home.file.".p10k.zsh".source = ./p10k.zsh;
