@@ -141,6 +141,7 @@ in {
     # kompose
     # kubectl # Kubernetes CLI tool, use docker
     krew
+    kubebuilder
     kubectx # kubectl context switching
     kubelogin-oidc
     kubernetes-helm # Kubernetes package manager
@@ -161,6 +162,7 @@ in {
     skaffold # Local Kubernetes dev tool
     sops
     # starship # Fancy shell that works with zsh
+    temporal-cli
     terraform # Declarative infrastructure management
     tilt # Fast-paced Kubernetes development
     tree # Should be included in macOS but it's not
@@ -202,7 +204,10 @@ in {
   # Dircolors
   programs.dircolors.enable = true;
   # Golang
-  programs.go.enable = true;
+  programs.go = {
+    enable = true;
+    package = pkgs.go_1_19;
+  };
   # GPG
   programs.gpg.enable = true;
   
