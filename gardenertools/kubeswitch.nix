@@ -1,7 +1,7 @@
 { pkgs ? import <nixpkgs> {}, stdenv ? pkgs.stdenv, lib ? pkgs.lib, installShellFiles ? pkgs.installShellFiles }:
 let
   name = "kubeswitch";
-  version = "0.7.1";
+  version = "0.7.2";
   binary = "switcher";
   release = with lib; with stdenv.targetPlatform;
            "switcher_" +
@@ -18,9 +18,9 @@ in stdenv.mkDerivation {
     src = with lib; with stdenv.targetPlatform; builtins.fetchurl {
       url = "https://github.com/danielfoehrKn/${name}/releases/download/${version}/${release}";
       # curlOpts = "-v -O";
-      sha256 = optionalString isDarwin (optionalString isx86_64  "sha256:0c46bbra0yc3hcgsff1sygk4f6flcahlhs4875dr5fgrp9ibwylv") +
-               optionalString isLinux  (optionalString isx86_64  "sha256:0i6cif6sym00a383ybbxd26jpg9qfhvf4n3n4pq29zv5211600hf") +
-               optionalString isDarwin (optionalString isAarch64 "sha256:0c29hi2vv59jwgblzgrshbkqnwfm6hpd74i428k8g85h2sni7j3f");
+      sha256 = optionalString isDarwin (optionalString isx86_64  "sha256:1qw6nmgb8f1n2bbji71wl4gn6k2njsi86y5kv1x43jmj47dms72y") +
+               optionalString isLinux  (optionalString isx86_64  "sha256:0w6si9yj37afi0l9rn0nzv7cnvxf0qanvd46yjqshzmxlnd91s14") +
+               optionalString isDarwin (optionalString isAarch64 "sha256:1a6l4w43bgcsfagyqghdzymk748h3hrny02cph2yb3jvb93nyy4l");
     };
     src2 = builtins.fetchurl {
       url = "https://github.com/danielfoehrKn/${name}/releases/download/${version}/switch.sh";
