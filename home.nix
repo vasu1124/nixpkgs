@@ -1,7 +1,8 @@
 { config, lib, ... }:
 
 let
-  pkgs = import <nixpkgs> {} //
+  pkgs = import <nixpkgs> {}
+         //
          import ./gardenertools {};
 
   # Import other Nix files
@@ -173,6 +174,9 @@ in {
     wget
     zsh-powerlevel10k
 
+    # grype
+    # syft
+
     # nerdfonts # not needed anymore with zsh-powerlevel10k
 
   ] 
@@ -212,4 +216,7 @@ in {
   programs.gpg.enable = true;
   
   # security.pki.certificateFiles = [ "/usr/local/share/ca-certificates/internal.crt" ];
+
+  # temporary fix https://github.com/NixOS/nixpkgs/issues/196651
+  manual.manpages.enable = false;
 }
