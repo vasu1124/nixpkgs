@@ -127,6 +127,7 @@ in {
     gardenctl
     gardenlogin
     kubeswitch
+    ocmcli
     google-cloud-sdk # Google Cloud Platform CLI
     graphviz # dot
     findutils
@@ -135,6 +136,7 @@ in {
     gnutar
     htop # Resource monitoring
     httpie # Like curl but more user friendly
+    hurl # hurl.dev
     jq # JSON parsing for the CLI
     jsonnet # Easy config language
     k9s
