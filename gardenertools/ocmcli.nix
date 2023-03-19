@@ -1,35 +1,64 @@
-{ pkgs ? import <nixpkgs> {}, lib ? pkgs.lib, buildGoModule ? pkgs.buildGoModule, fetchFromGitHub ? pkgs.fetchFromGitHub }:
+{ pkgs ? import <nixpkgs> {}, stdenv ? pkgs.stdenv, lib ? pkgs.lib, installShellFiles ? pkgs.installShellFiles }:
+let
+  name = "ocm";
+  version = "0.3.0-rc.1";
+  binary = "ocm";
+  release = with lib; with stdenv.targetPlatform;
+           "ocm-" + version + "-" + 
+           optionalString isWindows "windows" +
+           optionalString isLinux "linux" +
+           optionalString isDarwin "darwin" +
+           "-" + 
+           optionalString isx86_64 "amd64" +
+           optionalString isAarch64 "arm64" +
+           "." +
+           optionalString isWindows "zip" +
+           optionalString isLinux   "tar.gz" +
+           optionalString isDarwin  "tar.gz";
 
-buildGoModule rec {
-  pname = "open-component-model";
-  version = "0.2.0-rc.1";
-  rev = "v0.2.0-rc.1";
+in stdenv.mkDerivation {
+    name = "${binary}-${version}";
+    version = "${version}";
+    dontUnpack = false;
+    sourceRoot = ".";
+    
+    src = with lib; with stdenv.targetPlatform; builtins.fetchurl {
+      url = "https://github.com/open-component-model/${name}/releases/download/v${version}/${release}";
+      # curlOpts = "-v -O";
+      sha256 = optionalString isDarwin  (optionalString isx86_64  "08ndc1g07d762wbah22z7v351x0hj924yhhf2aja6qdi9jiq1nxa");
+      #         optionalString isLinux   (optionalString isx86_64  "sha256:1i9rd795n81kj7hrfqs22p4k2wziyabzj87nch7iy0gsws3fwxcj") +
+      #         optionalString isWindows (optionalString isx86_64  "sha256:1nv91i8457mazl35cd1z3nf45zd1s81s1gixka2c1zi76pjg9j41") +
+      #         optionalString isDarwin  (optionalString isAarch64 "sha256:1gdzsir6bgl3kdqx3lj4734k9ifzggph007krqxc4qihg06gi1z3");
 
-  src = fetchFromGitHub {
-    owner = pname;
-    repo = "ocm";
-    rev = "${rev}";
-    sha256 = "sha256-xVadHGagPKlJHfLkFwQIsNHP3m4+mnB5N/LVSomre4A=";
-  };
+    };
+
+    installPhase = ''
+      runHook preInstall
+
+      mkdir -p $out/bin
+      cp ${binary} $out/bin/${binary}
+      chmod a+x $out/bin/${binary}
+
+      runHook postInstall
+    '';
+
+    nativeBuildInputs = [ installShellFiles ];
+    postInstall = ''
+      $out/bin/${binary} completion bash > ${binary}.bash 2>/dev/null
+      $out/bin/${binary} completion zsh > ${binary}.zsh 2>/dev/null
+      installShellCompletion ${binary}.{bash,zsh}
+    '';
+
+    meta = with lib; {
+      description = ''
+        ocm is a command-line client for the Open Component Model (OCM).
+        The OCM provides a standard for describing delivery artifacts
+        that can be accessed from many types of component repositories.
+      '';
+      homepage = "https://github.com/open-component-model/ocm";
+      license = licenses.asl20;
+      platforms = with platforms; linux ++ darwin ++ windows;
+      maintainers = with maintainers; [ vasu1124 ];
+    };
+  }
   
-  vendorSha256 = "sha256-0UpV1ktqy/o5C3NDDrF2n2rocxBlsCGgjHlrtoyWUxM=";
-
-  CGO_ENABLED = 0;
-
-  subPackages = [ "cmds/ocm" "cmds/demoplugin" "cmds/helminstaller" ];
-
-  ldflags = [
-    "-s"
-    "-w"
-    "-X github.com/open-component-model/ocm/pkg/version.gitVersion=${version}"
-  ];
-
-  meta = with lib; {
-    description =
-      "CLI for interacting with Open-Component-Model";
-    homepage = "https://ocm.software";
-    license = licenses.asl20;
-    maintainers = with maintainers; [ vasu1124 ];
-    mainProgram = "ocm";
-  };
-}
