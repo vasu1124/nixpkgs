@@ -126,6 +126,8 @@ in {
           fi
        fi
       }
+
+      export PATH=$HOME/bin:$HOME/go/bin:$PATH:/usr/local/bin
     '';
 
     initExtraBeforeCompInit = ''
@@ -160,7 +162,7 @@ in {
       SHELL = "$HOME/.nix-profile/bin/zsh";
       LC_ALL = "en_US.UTF-8";
       TERM = "xterm-256color";
-      PATH = "/usr/local/bin:$PATH";
+#      PATH = "$HOME/bin:/usr/local/bin:$PATH";
     };
   };
 

@@ -5,6 +5,8 @@ let
          //
          import ./gardenertools {};
 
+  pkgsu = import <nixpkgsu> {};
+
   # Import other Nix files
   imports = [
     ./git.nix
@@ -85,14 +87,13 @@ in {
   };
 
   home.sessionPath = [
-    "$HOME/go/bin"
     "$HOME/.krew/bin"
-    "$HOME/bin"
   ];
 
   # Miscellaneous packages (in alphabetical order)
   home.packages = with pkgs; [
     adoptopenjdk-bin # Java
+    pkgsu.argocd
     autoconf # Broadly used tool, no clue what it does
     awscli # Amazon Web Services CLI
     azure-cli
@@ -120,8 +121,7 @@ in {
     # docker # World's #1 container tool
     # docker-compose # Local multi-container Docker environments
     # docker-machine # Docker daemon for macOS
-    fluxcd 
-    # fluxctl # GitOps operator
+    pkgsu.fluxcd 
     fzf
     fzy
     gardenctl
@@ -139,7 +139,7 @@ in {
     hurl # hurl.dev
     jq # JSON parsing for the CLI
     jsonnet # Easy config language
-    k9s
+    pkgsu.k9s
     kind # Easy Kubernetes installation
     # kompose
     # kubectl # Kubernetes CLI tool, use docker
@@ -149,6 +149,7 @@ in {
     kubelogin-oidc
     kubernetes-helm # Kubernetes package manager
     kustomize
+    # pkgsu.kustomize-sops
     # lorri # Easy Nix shell
     minikube # Local Kubernetes
     niv # Nix dependency management
@@ -212,7 +213,7 @@ in {
   # Golang
   programs.go = {
     enable = true;
-    package = pkgs.go_1_19;
+    package = pkgs.go_1_20;
   };
   # GPG
   programs.gpg.enable = true;
