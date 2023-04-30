@@ -23,7 +23,7 @@ let
   '';
 
   git-hash = pkgs.writeScriptBin "git-hash" ''
-    nix-prefetch-url --unpack https://github.com/$1/$2/archive/$3.tar.gz
+   nix-prefetch-url --unpack https://github.com/$1/$2/archive/$3.tar.gz
   '';
 
   wo = pkgs.writeScriptBin "wo" ''
@@ -77,7 +77,7 @@ in {
   home = {
     username = builtins.getEnv "USER";
     homeDirectory = builtins.getEnv "HOME";
-    stateVersion = "22.05";
+    stateVersion = "22.11";
   };
 
   home.sessionVariables = {
@@ -222,4 +222,11 @@ in {
 
   # temporary fix https://github.com/NixOS/nixpkgs/issues/196651
   manual.manpages.enable = false;
+
+  nix = {
+    package = pkgs.nixFlakes;
+    extraOptions = ''
+      experimental-features = nix-command flakes
+    '';
+  };
 }
