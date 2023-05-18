@@ -13,7 +13,7 @@ let
     ll = "ls -lh";
     k = "kubectl";
     # kubectx = "switch";
-    vi = "vim";
+    vi = "nvim";
     hms = "home-manager --extra-experimental-features 'nix-command flakes' switch";
 
     # Reload zsh

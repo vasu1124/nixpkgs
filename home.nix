@@ -107,12 +107,12 @@ in {
     # cargo-edit # Easy Rust dependency management
     # cargo-graph # Rust dependency graphs
     # cargo-watch # Watch a Rust project and execute custom commands upon change
-    cue # Experimental configuration language
     curl # An old classic
     colorls
     comma
     coreutils
     cpulimit
+    # pkgsu.cue
     # dhall # Exotic, Nix-like configuration language
     delve
     direnv # Per-directory environment variables
@@ -121,16 +121,19 @@ in {
     # docker # World's #1 container tool
     # docker-compose # Local multi-container Docker environments
     # docker-machine # Docker daemon for macOS
+    fd
     pkgsu.fluxcd 
     fzf
     fzy
+    findutils
+
     gardenctl
     gardenlogin
     kubeswitch
     ocmcli
+
     google-cloud-sdk # Google Cloud Platform CLI
     graphviz # dot
-    findutils
     gnupg # gpg
     gnused
     gnutar
@@ -149,9 +152,11 @@ in {
     kubelogin-oidc
     kubernetes-helm # Kubernetes package manager
     kustomize
+    # pkgsu.lazygit
     # pkgsu.kustomize-sops
     # lorri # Easy Nix shell
     minikube # Local Kubernetes
+    pkgsu.neovim
     niv # Nix dependency management
     nix-serve
     nixos-generators
@@ -163,12 +168,13 @@ in {
     protobuf # Protocol Buffers
     # python3 # Have you upgraded yet???
     # ruby_3_1
+    ripgrep
     skaffold # Local Kubernetes dev tool
     sops
     # starship # Fancy shell that works with zsh
     temporal-cli
     terraform # Declarative infrastructure management
-    tilt # Fast-paced Kubernetes development
+    pkgsu.tilt # Fast-paced Kubernetes development
     tree # Should be included in macOS but it's not
     python310Packages.wakeonlan
     vagrant # Virtualization made easy
@@ -179,8 +185,7 @@ in {
 
     # grype
     # syft
-
-    # nerdfonts # not needed anymore with zsh-powerlevel10k
+    (nerdfonts.override { fonts = [ "FiraCode" "JetBrainsMono" ]; })
 
   ] 
   ++ gitTools 
@@ -204,6 +209,8 @@ in {
     '';
   };
 
+  fonts.fontconfig.enable = true;
+
   # Home Manager
   programs.home-manager.enable = true;
   # nix-index for comma
@@ -217,7 +224,7 @@ in {
   };
   # GPG
   programs.gpg.enable = true;
-  
+
   # security.pki.certificateFiles = [ "/usr/local/share/ca-certificates/internal.crt" ];
 
   # temporary fix https://github.com/NixOS/nixpkgs/issues/196651
