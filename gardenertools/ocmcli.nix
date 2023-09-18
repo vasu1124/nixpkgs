@@ -1,7 +1,7 @@
 { pkgs ? import <nixpkgs> {}, stdenv ? pkgs.stdenv, lib ? pkgs.lib, installShellFiles ? pkgs.installShellFiles }:
 let
   name = "ocm";
-  version = "0.3.0-rc.1";
+  version = "0.4.0";
   binary = "ocm";
   release = with lib; with stdenv.targetPlatform;
            "ocm-" + version + "-" + 
@@ -25,10 +25,10 @@ in stdenv.mkDerivation {
     src = with lib; with stdenv.targetPlatform; builtins.fetchurl {
       url = "https://github.com/open-component-model/${name}/releases/download/v${version}/${release}";
       # curlOpts = "-v -O";
-      sha256 = optionalString isDarwin  (optionalString isx86_64  "08ndc1g07d762wbah22z7v351x0hj924yhhf2aja6qdi9jiq1nxa");
-      #         optionalString isLinux   (optionalString isx86_64  "sha256:1i9rd795n81kj7hrfqs22p4k2wziyabzj87nch7iy0gsws3fwxcj") +
-      #         optionalString isWindows (optionalString isx86_64  "sha256:1nv91i8457mazl35cd1z3nf45zd1s81s1gixka2c1zi76pjg9j41") +
-      #         optionalString isDarwin  (optionalString isAarch64 "sha256:1gdzsir6bgl3kdqx3lj4734k9ifzggph007krqxc4qihg06gi1z3");
+      sha256 = optionalString isDarwin  (optionalString isx86_64  "08ndc1g07d762wbah22z7v351x0hj924yhhf2aja6qdi9jiq1nxa") +
+               optionalString isLinux   (optionalString isx86_64  "sha256:1i9rd795n81kj7hrfqs22p4k2wziyabzj87nch7iy0gsws3fwxcj") +
+               optionalString isWindows (optionalString isx86_64  "sha256:1nv91i8457mazl35cd1z3nf45zd1s81s1gixka2c1zi76pjg9j41") +
+               optionalString isDarwin  (optionalString isAarch64 "sha256:116vmlwail1ic3nk8zixlk79s4swc71ss2z2x3k2f27zdfxp7mr7");
 
     };
 

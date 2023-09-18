@@ -1,7 +1,7 @@
 { pkgs ? import <nixpkgs> {}, stdenv ? pkgs.stdenv, lib ? pkgs.lib, installShellFiles ? pkgs.installShellFiles }:
 let
   name = "gardenlogin";
-  version = "0.3.0";
+  version = "0.4.0";
   binary = "gardenlogin";
   release = with lib; with stdenv.targetPlatform;
            "gardenlogin_" +
@@ -16,14 +16,15 @@ in stdenv.mkDerivation {
     name = "${binary}-${version}";
     version = "${version}";
     dontUnpack = true;
-    
+    sourceRoot = ".";
+
     src = with lib; with stdenv.targetPlatform; builtins.fetchurl {
       url = "https://github.com/gardener/${name}/releases/download/v${version}/${release}";
       # curlOpts = "-v -O";
       sha256 = optionalString isDarwin  (optionalString isx86_64  "sha256:0v5rjx9d8zp3y3cd13786lwc0y1nvgcyb7fmgdz8w7y9cs63ki8m") +
                optionalString isLinux   (optionalString isx86_64  "sha256:0q4cs1riii19283cp8z0lxp971km8nhsk1srnnqgb8xbczc2x9p1") +
                optionalString isWindows (optionalString isx86_64  "sha256:0lgj262iaf2iqldnka1ppdwyc5nn5cnn2f057hwa7mv43za7izya") +
-               optionalString isDarwin  (optionalString isAarch64 "sha256:0v9l29wldnlgj1cv6c145dgfs65hs0r1qxyxa6mp9cnr99yyp4lj");
+               optionalString isDarwin  (optionalString isAarch64 "sha256:0cbd45dm5lyrcf2gv6vawkj2309zi7jz0ajaff0hvc7a1gi6cn8v");
     };
 
     installPhase = ''

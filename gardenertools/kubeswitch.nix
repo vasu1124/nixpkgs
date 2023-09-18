@@ -1,7 +1,7 @@
 { pkgs ? import <nixpkgs> {}, stdenv ? pkgs.stdenv, lib ? pkgs.lib, installShellFiles ? pkgs.installShellFiles }:
 let
   name = "kubeswitch";
-  version = "0.7.2";
+  version = "0.8.0";
   binary = "switcher";
   release = with lib; with stdenv.targetPlatform;
            "switcher_" +
@@ -14,21 +14,18 @@ in stdenv.mkDerivation {
     name = "${name}-${version}";
     version = "${version}";
     dontUnpack = true;
+    sourceRoot = ".";
     
     switcher = with lib; with stdenv.targetPlatform; builtins.fetchurl {
       url = "https://github.com/danielfoehrKn/${name}/releases/download/${version}/${release}";
       # curlOpts = "-v -O";
       sha256 = optionalString isDarwin (optionalString isx86_64  "sha256:1qw6nmgb8f1n2bbji71wl4gn6k2njsi86y5kv1x43jmj47dms72y") +
                optionalString isLinux  (optionalString isx86_64  "sha256:0w6si9yj37afi0l9rn0nzv7cnvxf0qanvd46yjqshzmxlnd91s14") +
-               optionalString isDarwin (optionalString isAarch64 "sha256:1a6l4w43bgcsfagyqghdzymk748h3hrny02cph2yb3jvb93nyy4l");
+               optionalString isDarwin (optionalString isAarch64 "sha256:1jvp6klyga0r50k61gvpb8kf9bi5bag2qnigfchcl15rbjabcm09");
     };
     switch = builtins.fetchurl {
       url = "https://github.com/danielfoehrKn/${name}/releases/download/${version}/switch.sh";
-      sha256 = "sha256:05j1dn10qwgzc21blw51ihv4x4yyk1njx0z1yqxw971jk2zas0cw";
-    };
-    completion = builtins.fetchurl {
-      url = "https://raw.githubusercontent.com/danielfoehrKn/${name}/master/scripts/_switch.bash";
-      sha256 = "sha256:1hiigqrh28f7h4yin2vxpr7sdcj3v93ms8ll5zjib1qzsq9mcid4";
+      sha256 = "sha256:0ivxnzh212lrf0pp6hv5hvl51jsjjglp4yz6h10cyci6sfvg9mhi";
     };
 
     installPhase = ''
@@ -46,7 +43,9 @@ in stdenv.mkDerivation {
 
     nativeBuildInputs = [ installShellFiles ];
     postInstall = ''
-      installShellCompletion --bash $completion
+      $out/bin/${binary} completion bash > ${binary}.bash 2>/dev/null
+      $out/bin/${binary} completion zsh > ${binary}.zsh 2>/dev/null
+      installShellCompletion ${binary}.{bash,zsh}
     '';
 
     shellHook = ''
