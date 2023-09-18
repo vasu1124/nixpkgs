@@ -92,14 +92,15 @@ in {
 
   # Miscellaneous packages (in alphabetical order)
   home.packages = with pkgs; [
-    adoptopenjdk-bin # Java
-    pkgsu.argocd
+    # adoptopenjdk-bin # Java
+    argocd
     autoconf # Broadly used tool, no clue what it does
     awscli # Amazon Web Services CLI
     azure-cli
     bash # /bin/bash
     bat # cat replacement written in Rust
     buildpack # Cloud Native buildpacks
+    bottom
     # buildkit # Fancy Docker
     cacert
     cachix # Nix build cache
@@ -122,7 +123,7 @@ in {
     # docker-compose # Local multi-container Docker environments
     # docker-machine # Docker daemon for macOS
     fd
-    pkgsu.fluxcd 
+    fluxcd 
     fzf
     fzy
     findutils
@@ -134,15 +135,16 @@ in {
 
     google-cloud-sdk # Google Cloud Platform CLI
     graphviz # dot
-    gnupg # gpg
+    # gnupg # gpg
+    gdu
     gnused
     gnutar
     htop # Resource monitoring
     httpie # Like curl but more user friendly
     hurl # hurl.dev
     jq # JSON parsing for the CLI
-    jsonnet # Easy config language
-    pkgsu.k9s
+    # jsonnet # Easy config language
+    k9s
     kind # Easy Kubernetes installation
     # kompose
     # kubectl # Kubernetes CLI tool, use docker
@@ -152,15 +154,15 @@ in {
     kubelogin-oidc
     kubernetes-helm # Kubernetes package manager
     kustomize
-    # pkgsu.lazygit
+    lazygit
     # pkgsu.kustomize-sops
     # lorri # Easy Nix shell
     minikube # Local Kubernetes
-    pkgsu.neovim
+    neovim
     niv # Nix dependency management
     nix-serve
     nixos-generators
-    # nodejs # node and npm
+    nodejs # node and npm
     # nodePackages.semver
     openssl
     # podman # Docker alternative
@@ -174,9 +176,9 @@ in {
     # starship # Fancy shell that works with zsh
     temporal-cli
     terraform # Declarative infrastructure management
-    pkgsu.tilt # Fast-paced Kubernetes development
+    tilt # Fast-paced Kubernetes development
     tree # Should be included in macOS but it's not
-    python310Packages.wakeonlan
+    # python310Packages.wakeonlan
     vagrant # Virtualization made easy
     vault # Secret management
     vscode # My fav text editor if I'm being honest
@@ -220,7 +222,7 @@ in {
   # Golang
   programs.go = {
     enable = true;
-    package = pkgs.go_1_20;
+    package = pkgsu.go_1_21;
   };
   # GPG
   programs.gpg.enable = true;
