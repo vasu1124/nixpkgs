@@ -108,7 +108,7 @@ in {
     # cargo-edit # Easy Rust dependency management
     # cargo-graph # Rust dependency graphs
     # cargo-watch # Watch a Rust project and execute custom commands upon change
-    curl # An old classic
+#    curl # An old classic
     colorls
     comma
     coreutils
@@ -230,7 +230,7 @@ in {
   # security.pki.certificateFiles = [ "/usr/local/share/ca-certificates/internal.crt" ];
 
   # temporary fix https://github.com/NixOS/nixpkgs/issues/196651
-  manual.manpages.enable = false;
+  #  manual.manpages.enable = false;
 
   nix = {
     package = pkgs.nixFlakes;
