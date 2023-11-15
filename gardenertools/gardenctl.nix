@@ -1,7 +1,7 @@
 { pkgs ? import <nixpkgs> {}, stdenv ? pkgs.stdenv, lib ? pkgs.lib, installShellFiles ? pkgs.installShellFiles }:
 let
   name = "gardenctl-v2";
-  version = "2.4.0";
+  version = "2.5.0";
   binary = "gardenctl";
   release = with lib; with stdenv.targetPlatform;
            "gardenctl_v2_" +
@@ -24,7 +24,7 @@ in stdenv.mkDerivation {
       sha256 = optionalString isDarwin  (optionalString isx86_64  "sha256:0nixv4lmfsvpaldxzg87225z9vcaijzkzr931564p4ijgx428zrm") +
                optionalString isLinux   (optionalString isx86_64  "sha256:1i9rd795n81kj7hrfqs22p4k2wziyabzj87nch7iy0gsws3fwxcj") +
                optionalString isWindows (optionalString isx86_64  "sha256:1nv91i8457mazl35cd1z3nf45zd1s81s1gixka2c1zi76pjg9j41") +
-               optionalString isDarwin  (optionalString isAarch64 "sha256:1qszygdd9k8390xk1s138z46hnr94mndlfzxcc3s2fvplx46a6wx");
+               optionalString isDarwin  (optionalString isAarch64 "sha256:1q2bnv1gniaj6psp33ck1xrrv9kr3qhhw98c22c35id2kfg2asha");
 
     };
 
